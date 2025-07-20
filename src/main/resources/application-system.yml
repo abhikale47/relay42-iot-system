@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: iot-system
+  datasource:
+    url: jdbc:postgresql://localhost:5432/iot_system
+    username: iot_user
+    password: iot_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  flyway:
+    enabled: true
+    mixed: true
+    group: true
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: iot-processing-group-v2
+      enable-auto-commit: false
+      auto-offset-reset: latest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.iot.common.model
+    listener:
+      ack-mode: batch
+      poll-timeout: 3000
+
+iot:
+  kafka:
+    topic-name: iot-readings
+
+server:
+  port: 8080
+
+jwt:
+  secret: aVerySecureSecretKeyThatIsAtLeast256BitsLongForJWTTokenGenerationAndValidation1234567890
+  expiration: 86400
+
+logging:
+  level:
+    com.iot.system: INFO
+    org.springframework.kafka: INFO
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    doc-expansion: none
+  show-actuator: false
